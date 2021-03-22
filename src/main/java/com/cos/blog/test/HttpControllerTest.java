@@ -20,7 +20,7 @@ public class HttpControllerTest {
 	public String lombokTest() {
 		Member m = Member.builder().username("ssar").password("1234").email("ssar@nate.com").build();
 		System.out.println(TAG+"getter : "+m.getUsername());
-		m.setUsername("coss");
+		m.setUsername("cos");
 		System.out.println(TAG+"getter"+m.getUsername());
 		return "lombok test 완료";
 	}

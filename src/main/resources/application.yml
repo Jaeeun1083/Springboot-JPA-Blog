@@ -1,6 +1,43 @@
+#내 port와 context를 설정하는 것
+server:
+  port: 8000
+  servlet:
+    context-path: /blog
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force: true
+      
 spring:
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+# prefix : controller가 리턴을 할 때 앞에 붙여주는 경로 명
+      suffix: .jsp
+# suffix : 뒤에 붙여주는 경로명
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/blog?serverTimezone=Asia/Seoul
     username: cos
     password: cos1234
+    
+  jpa:
+    open-in-view: true
+    hibernate:
+      ddl-auto: create
+#    ddl-auto의 create설정 : 테이블을 새로 만들겠다.
+#    나중에는 update로 바꿔야함.
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+# 테이블을 만들 때 변수명 그대로 필드를 넣어주겠다.
+      use-new-id-generator-mappings: false
+#    false : jpa가 사용하는 기본 넘버링 전략을 따라가지 않겠다.
+    show-sql: true
+#   테이블이 만들어지면 console창에 보여주기위해
+    properties:
+      hibernate.format_sql: true
+# 예쁘게 정렬시키기 위해
+
+  jackson:
+    serialization:
+      fail-on-empty-beans: false

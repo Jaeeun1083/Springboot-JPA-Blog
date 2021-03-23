@@ -1,8 +1,13 @@
 package com.cos.blog.test;
 
+import java.util.List;
 import java.util.function.Supplier;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort.Direction;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -12,7 +17,9 @@ import com.cos.blog.model.RoleType;
 import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
 
-@RestController //페이지 이동이 아닌 데이터만 리턴해주는
+import net.bytebuddy.asm.Advice.OffsetMapping.Sort;
+
+@RestController //html이 아니라 data를 리턴해주는 어노텐션.
 public class DummyControllerTest {
 
 //	//http://localhost:8000/blog/dummy/join으로 request를 할 건데
@@ -36,6 +43,23 @@ public class DummyControllerTest {
 	//메모리에 같이 뜬다. (Autowired는 userRepository타입으로 spring이 관리하는 객체가 있다면 userRepository에 넣어준다)
 	//의존성 주입.(DI)
 	
+	
+	//전체 select
+	@GetMapping("/dummy/users")
+	public List<User> list(){
+		return userRepository.findAll();
+	}
+	
+	//페이징 List. 한 페이지 당 2건에 데이터를 리턴받아 볼 예정
+	@GetMapping("/dummy/user")
+	public Page<User> pageList(@PageableDefault(size=2, sort="id", direction=Direction.DESC) Pageable pageable){
+		Page<User> pagingUser = userRepository.findAll(pageable);
+		
+		List<User> users = pagingUser.getContent();
+		return paginguser;
+		
+	}
+	
 	// {id} 주소로 파라미터를 전달 받을 수 있음.
 	// http://localhost:8000/blog/dummy/user/3  ->3이 아이디로 들어감.
 	@GetMapping("/dummy/user/{id}")
@@ -55,6 +79,13 @@ public class DummyControllerTest {
 				// IllegalArgumentException : 잘못된 인수가 들어왔을 경우
 			}
 		});
+		
+		// 요청은 웹브라우저
+		// user 객체 = 자바 오브젝트. -> 웹브라우저가 이해하지 못함.
+		// user 객체가 반환될 때 변환해야함 (웹브라우저가 이해할 수 있는 데이터 -> json)
+		// 스프링부트 -> MessageConverter가 응답시에 자동 작동함
+		// 만약 자바 오브젝트를 리턴하게 되면 MessageConverter가 Jackson 라이브러리를 호출해서
+		// user 오브젝트를 json으로 변환해서 브라우저에게 던져준다.
 		return user;
 	}
 	

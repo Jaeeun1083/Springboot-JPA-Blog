@@ -1,6 +1,10 @@
 package com.cos.blog.test;
 
+import java.util.function.Supplier;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -31,6 +35,28 @@ public class DummyControllerTest {
 	//Spring이 @Restcontrlloer을 읽어서 dummycontrllertest를 메모리에 띄우줄 때 null인데 @Autowired을 붙여주면 
 	//메모리에 같이 뜬다. (Autowired는 userRepository타입으로 spring이 관리하는 객체가 있다면 userRepository에 넣어준다)
 	//의존성 주입.(DI)
+	
+	// {id} 주소로 파라미터를 전달 받을 수 있음.
+	// http://localhost:8000/blog/dummy/user/3  ->3이 아이디로 들어감.
+	@GetMapping("/dummy/user/{id}")
+	public User detail(@PathVariable int id) {
+		//@PathVariable -> 함수 파라미터에서 처리하기 위한 어노텐션
+		
+		// user의 4번을 찾으면 내가 데이터베이스에서 못찾아오게 되면 user가 null이 됨
+		//그럼 return할 때 null이 리턴이 되니까 프로그램에 문제가 있지 않겠니
+		//그러므로 Optional로 너의 User객체를 감싸서 가져올테니 null인지 아닌지 판단해서 return해
+		User user = userRepository.findById(id).orElseThrow(new Supplier<IllegalArgumentException>() {
+			//Optional이 제공하는 함수 .get() : null이 리턴될 일 없으니 user객체를 뽑겠다
+			//											.orElseGet() : null이라면 객체를 생성해서 user에 넣겠다. -> 이 때 들어가는 타입이 supplier타입..
+			
+			@Override
+			public IllegalArgumentException get() {
+				return new IllegalArgumentException("해당 유저는 없습니다. id : " + id);
+				// IllegalArgumentException : 잘못된 인수가 들어왔을 경우
+			}
+		});
+		return user;
+	}
 	
 	
 	@PostMapping("/dummy/join")

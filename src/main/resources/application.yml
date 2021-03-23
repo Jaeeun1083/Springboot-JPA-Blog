@@ -24,7 +24,7 @@ spring:
   jpa:
     open-in-view: true
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
 #    ddl-auto의 create설정 : 테이블을 새로 만들겠다.
 #    나중에는 update로 바꿔야함.
       naming:

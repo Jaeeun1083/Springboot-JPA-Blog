@@ -5,12 +5,15 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,8 +24,10 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-@Entity
+@Builder //빌더 패턴
+//ORM -> Java (다른언어) Object -> 테이블로 매핑해주는 기술
+@Entity //User클래스가 MySQL에 테이블이 생성 된다.
+//@DynamicInsert //insert할 때 null인 필드를 제외시켜줌
 public class User {
 	
 	@Id //Pk설정
@@ -38,10 +43,13 @@ public class User {
 	@Column(nullable =false, length =50)
 	private String email;
 	
-	@ColumnDefault("'user'")
-	private String role; //Enum을 쓰는게 좋다. -> 데이터의 도메인을 만들어주기 때문에.
-	//role은 admin이나 user등 역할을 설정하여 권한을 부여하기 위해 설정하는데
-	//String타입으로 두면 오타가 나도 
+	//@ColumnDefault("USER")
+	//DB는 RoleType이 없다. 그래서 Enum타입을 알려줘야함
+	@Enumerated(EnumType.STRING)
+	private RoleType role; //Enum을 쓰는게 좋다. -> 데이터의 도메인을 만들어주기 때문에. (범위 안의 데이터를 넣을 때)
+	//role은 ADMIN이나 USER등 역할을 설정하여 권한을 부여하기 위해 설정하는데
+	//String타입으로 두면 오타가 나도 알 수 없는데 RoleType을 사용하면 
+	
 	
 	@CreationTimestamp //회원가입한 시간이 자동으로 입력이 된다.
 	private Timestamp createDate;

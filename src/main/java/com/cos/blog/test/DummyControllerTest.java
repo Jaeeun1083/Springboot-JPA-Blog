@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.cos.blog.model.RoleType;
 import com.cos.blog.model.User;
 import com.cos.blog.repository.UserRepository;
 
@@ -30,6 +31,8 @@ public class DummyControllerTest {
 	//Spring이 @Restcontrlloer을 읽어서 dummycontrllertest를 메모리에 띄우줄 때 null인데 @Autowired을 붙여주면 
 	//메모리에 같이 뜬다. (Autowired는 userRepository타입으로 spring이 관리하는 객체가 있다면 userRepository에 넣어준다)
 	//의존성 주입.(DI)
+	
+	
 	@PostMapping("/dummy/join")
 	public String join(User user) { //오브젝트로도 받을 수 있음
 		
@@ -40,7 +43,7 @@ public class DummyControllerTest {
 		System.out.println("role: " + user.getRole());
 		System.out.println("createDate: " + user.getCreateDate());
 		
-		
+		user.setRole(RoleType.USER);
 		userRepository.save(user);
 		return "회원가입이 완료되었습니다.";
 	}

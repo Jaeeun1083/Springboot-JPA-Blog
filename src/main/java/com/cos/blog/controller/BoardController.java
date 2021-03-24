@@ -11,5 +11,6 @@ public class BoardController {
 	public String index() {
 		//prefix로 /WEB-INF, suffix로 .jsp가 붙어서 실행됨
 		return "index";
+
 	}
 }

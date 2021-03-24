@@ -6,10 +6,12 @@ import java.util.function.Supplier;
 import javax.transaction.Transactional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.web.PageableDefault;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -48,8 +50,24 @@ public class DummyControllerTest {
 	//의존성 주입.(DI)
 	
 	
+	
+	//삭제하기 테스트
+	@DeleteMapping("/dummy/user/{id}")
+	public String delete(@PathVariable int id) {
+		try {
+			userRepository.deleteById(id);
+		} catch (EmptyResultDataAccessException e) {
+			return "삭제에 실패하였습니다. 해당 id는 DB에 없습니다.";
+		}	
+		
+		return "삭제되었습니다. id : "+id;
+	}
+	
+	
+	
+	//수정하기 테스트
 	//email,password를 받아야함 ->수정 하려고
-	@Transactional
+	@Transactional //save를 사용하지 않고 어노테이션을 사용해 더티체킹
 	@PutMapping("/dummy/user/{id}")
 	public User updateUser(@PathVariable int id, @RequestBody User requestUser) { //json데이터 받으려고 @RequestBody. //json데이터를 요청하면 Java Object(MessageConverter의 Jackson라이브러리가 변환해서 받아줌.
 		System.out.println("id : " + id);
@@ -63,18 +81,14 @@ public class DummyControllerTest {
 		user.setEmail(requestUser.getEmail());
 
 		//userRepository.save(requestUser);
-		return null;
+		return user;
 		
 		//save함수는 id를 전달하지 않으면 insert를 해주고
 		//					 id를 전달하면 해당 id에 대한 데이터가 있으면 update를 해주고
 		//					 id를 전달하면 해당 id에 대한 데이터가 없으면 insert를 해준다.
-		//DB에서 user를 들고와서 
 	}
 	
-	
-	
-	
-	
+
 	
 	//전체 select
 	@GetMapping("/dummy/users")

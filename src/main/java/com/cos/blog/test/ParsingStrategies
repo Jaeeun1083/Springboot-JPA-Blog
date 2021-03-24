@@ -1,0 +1,40 @@
+1. get요청
+  특징 : 쿼리스트링 방식으로 요청 (select)
+       : body에 데이터를 담아 보내지 않음
+
+2. post, put, delete 요청 (데이터를 변경)
+  특징 : 데이터를 담아보내야 할 것이 많음
+       : form태그 method='post'
+         form 태그 -> get요청, post요청만 가능 (key=value형태로 날아감)
+         자바스크립트로 요청을 해야함
+  -> 프로그램 로직이 통일이 안되므로
+
+  통일 : 자바스크립트로 ajax요청 + 데이터는 json으로 통일! (post, put, delete를 구분하지 않기 위해)
+
+  spring에는 form:form태그가 있음 -> post, put, delete, get요청이 가능함
+
+<스프링 컨트롤러의 파싱 전략>
+스프링 컨트롤러는 key=value 데이터를 자동으로 파싱하여 변수에 담아준다
+get요청은 key=value이고 post요청 중에 x-www-form-urlencoded (form태그를 만들어서 데이터 전송) 할 경우에도
+key=value이기 때문에 이런 데이터는 함수의 파라미터로 받을 수 있다.
+ex)
+PostMapping("/pars")
+public String pars(String username, String email){
+
+  return "pars";
+ }
+
+스프링은 key=value형태의 데이터를 오브젝트로 파싱해서 받아줄 수도 있다.
+주의할 점 : 1. setter가 없으면 key=value 데이터를 스프링이 파싱해서 넣어줄 수 없다.
+               setter를 호출해서 데이터를 담아주기 때문에.
+            2. 내가 보내는 데이터가 post방식의 key=value형태로 보낼건데 key값과 변수값이 같아야 setter가 호출이 된다
+
+
+key=value가 아닌 데이터는 어떻게 파싱할까?
+json 데이터나 일반 text데이터는 스프링 컨트롤러에서 받기 위해서 @RequestBody 어노텐션이 필요하다.
+MessageConverter 클래스를 구현한 Jackson 라이브러리가 발동하면서 json데이터를 자바 오브젝트로 파싱하여 받아준다.
+
+form태그로 json데이터 요청하는 방법
+key=value 데이터가 아닌 json데이터를 전송하려면
+form태그를 만들고 id를 만들고 javascript를 걸어준다. ->submit을 누르면 javascript funtion이 실행되도록.
+javascript에서 jquery로 변수에 담아서 오브젝트로 묶고 ajax로 요청.

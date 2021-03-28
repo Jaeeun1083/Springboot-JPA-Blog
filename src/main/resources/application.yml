@@ -23,6 +23,7 @@ spring:
     
   jpa:
     open-in-view: true
+    #lazy로딩이 가능하게함. 설정하지 않아도 디폴트 값.
     hibernate:
       ddl-auto: update
 #    ddl-auto의 create설정 : 테이블을 새로 만들겠다.

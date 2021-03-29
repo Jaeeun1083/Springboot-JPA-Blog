@@ -19,7 +19,7 @@ public class UserApiController {
 	@Autowired //DI할 수 있음. spring이 컴포넌트 스캔할 때 서비스 어노텐션 클래스를 보는 순간 스프링 bean에 등록해서 메모리에 띄워주기 때문에
 	private UserService userService; //서비스를 dependency injection
 	
-	@PostMapping("/api/user")
+	@PostMapping("/auth/joinProc")
 	public ResponseDto<Integer> save(@RequestBody User user){//요청이 json이니까    //user로 받는게 username,password,email 세개 이므로 role은 내가 넣어줘야함
 		System.out.println("UserApiController : save 호출 됨");
 		//실제로 DB에 insert를 하고 아래에서 return이 되면 됨.
@@ -27,16 +27,4 @@ public class UserApiController {
 		userService.회원가입(user); //받은걸 그대로 넣어서 
 		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1); //자바 오브젝트를 JSON으로 변환해서 리턴(Jackson)
 	}
-	
-//	@PostMapping("blog/api/user/login")
-//	public ResponseDto<Integer> login(@RequestBody User user, HttpSession session){
-//		System.out.println("UserApiController : login 호출 됨");
-//		User principal = userService.로그인(user); //principal 용어 : 접근 주체
-//		
-//		if(principal != null) {
-//			session.setAttribute("principal", principal);
-//		}
-//		return new ResponseDto<Integer>(HttpStatus.OK.value(), 1); 
-//	}
-	
-	}
+}
